@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container-fluid center-block text-center">
+    <div class="row">
+      <div class="col-lg-12">   
+        <p id="line_length"  style="font-size: 20vh">{{ length }}</p>
+        <p style="font-size: 5vh">in line</p>
+      </div>
+    <div class="row">
+      <div class="col-lg-12" style="height: 20vh">
+    </div>
+    <div class="row">
+      <div class="col-lg-12">   
+        <p class="lead" style="font-size: 7vh">Text <b>Hi</b> to <b>{{ number }}</b> to be added</p> 
+      </div>
+    </div>
+  </div>  
+</body>
+<script>
+    var targetContainer = document.getElementById("line_length");
+    var eventSource = new EventSource("/stream");
+    eventSource.onmessage = function(e) {
+      var users = JSON.parse(e.data)
+        targetContainer.innerHTML = users.waiting.length;
+    };
+</script>
+<noscript>
+    <meta http-equiv="refresh" content="30">
+</noscript>
+
+</html>

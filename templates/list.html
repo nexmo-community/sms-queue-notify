@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <form method="POST" class="center-block text-center" style="width: fit-content">
+            <h3>In Line</h3>
+            <table id="notified" class="table table-condensed">
+            {% for user in users.waiting %}
+                <tr>
+                    <td>{{ user.phone_number }}</td>
+                    <td><button name="notify" value="{{ user.phone_number }}" class="btn btn-primary btn-xs" type="submit">Notify</button></td>
+                    <td><button name="remove" value="{{ user.phone_number }}" class="btn btn-default btn-xs" type="submit">Remove</button></td>
+                </tr>
+            {% endfor %}
+            </table>
+            <h3>Notified</h3>
+            <table class="table table-condensed">
+            {% for user in users.notified %}
+                <tr>
+                    <td>{{ user.phone_number }}</td>
+                    <td><button name="arrived" value="{{ user.phone_number }}" class="btn btn-primary btn-xs" type="submit">Arrived</button></td>
+                </tr>
+            {% endfor %}
+            </table>
+        </form>
+    </body>
+
+    <script>
+        var targetContainer = document.getElementById("notified");
+        var eventSource = new EventSource("/stream");
+        eventSource.onmessage = function(e) {
+            var user;
+            var users = JSON.parse(e.data);
+            users = users.waiting.sort((a, b) => (a.wait_time < b.wait_time) ? 1 : -1)
+            var user_table = '';
+            for (user of users){
+                user_table = user_table + '<tr>'
+                + '<td>' + user.phone_number + '</td>'
+                + '<td><button name="notify" value="' + user.phone_number + '" class="btn btn-primary btn-xs" type="submit">Notify</button></td>' 
+                + '<td><button name="remove" value="' + user.phone_number + '" class="btn btn-default btn-xs" type="submit">Remove</button></td>'
+                + '</tr>'
+            }
+            targetContainer.innerHTML = user_table;
+        };
+    </script>
+    <noscript>
+        <meta http-equiv="refresh" content="30">
+    </noscript>
+
+</html>
