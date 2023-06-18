@@ -1,6 +1,6 @@
 Flask==1.1.1
 Flask-SQLAlchemy==2.4.1
-nexmo==2.4.0
+nexmo==2.5.1
 
 
 
